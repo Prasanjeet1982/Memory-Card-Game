@@ -1,0 +1,112 @@
+Explanation for each major component of the code, including classes, functions, and routes.
+
+1. **Imports and Setup:**
+
+   ```python
+   import random
+   from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+   from fastapi.staticfiles import StaticFiles
+   from fastapi.responses import HTMLResponse
+   from starlette.routing import WebSocketRoute
+   from starlette.templating import Jinja2Templates
+   ```
+
+   - Import necessary modules, including FastAPI, WebSocket, and related components for serving static files and rendering templates.
+
+2. **FastAPI App and Static Files:**
+
+   ```python
+   app = FastAPI()
+   app.mount("/static", StaticFiles(directory="static"), name="static")
+   ```
+
+   - Create a FastAPI app instance.
+   - Mount the `/static` route to serve static files (CSS, JavaScript) from the `static` directory.
+
+3. **Jinja2 Templates:**
+
+   ```python
+   templates = Jinja2Templates(directory="templates")
+   ```
+
+   - Initialize Jinja2 templates for rendering HTML templates located in the `templates` directory.
+
+4. **Game Class:**
+
+   ```python
+   class Game:
+       # ... (methods and attributes)
+   ```
+
+   - Define a `Game` class that represents the Memory Card Game.
+   - The class encapsulates the game's logic and state.
+
+5. **Game Initialization and Board Setup:**
+
+   ```python
+   def __init__(self, rows: int, cols: int):
+       # ... (initialize attributes)
+   ```
+
+   - Constructor for the `Game` class.
+   - Initializes the game with the specified number of rows and columns.
+   - Sets up the game board by creating pairs of symbols and shuffling them.
+
+6. **Card Flipping and Matching:**
+
+   ```python
+   def flip_card(self, row: int, col: int):
+       # ... (flip_card method)
+
+   def check_match(self):
+       # ... (check_match method)
+
+   def reset_flipped(self):
+       # ... (reset_flipped method)
+   ```
+
+   - `flip_card`: Flips a card at the specified row and column, allowing players to select cards to flip.
+   - `check_match`: Checks if the flipped cards form a matching pair.
+   - `reset_flipped`: Resets the list of flipped cards after checking for a match.
+
+7. **Create Game Instance:**
+
+   ```python
+   game = Game(rows=4, cols=4)
+   ```
+
+   - Creates an instance of the `Game` class with 4 rows and 4 columns.
+
+8. **WebSocket Communication:**
+
+   ```python
+   @app.websocket("/ws")
+   async def websocket_endpoint(websocket: WebSocket):
+       # ... (WebSocket communication logic)
+   ```
+
+   - Defines a WebSocket endpoint for handling game communication with clients.
+   - Accepts WebSocket connections, receives card flip data, checks for matches, and sends match results.
+
+9. **HTML Interface:**
+
+   ```python
+   @app.get("/", response_class=HTMLResponse)
+   async def read_root():
+       # ... (route to render game interface)
+   ```
+
+   - Defines a route to render the game interface using a Jinja2 template.
+   - Renders the `index.html` template and passes data like the number of rows and columns to the template.
+
+10. **WebSocket Route:**
+
+    ```python
+    @app.websocket_route("/ws-feed")
+    async def websocket_route():
+        # ... (WebSocket route for serving WebSocket communication)
+    ```
+
+    - Defines a WebSocket route for serving the WebSocket communication.
+
+The code creates a basic web-based Memory Card Game using FastAPI and WebSocket communication. Players can interact with the game through a web interface, flip cards, and the game communicates real-time card matching results using WebSocket. The `Game` class handles the game's logic and state, ensuring that the rules of the Memory Card Game are followed. The code is organized, making it easier to understand and extend for further development.
